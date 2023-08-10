@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from event.models import Type_event, Event
+from events.models import Type_event, Event
 from .serializers import Type_eventSerializer, EventSerializer
 
 
