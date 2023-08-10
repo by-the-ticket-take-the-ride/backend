@@ -1,14 +1,14 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import Type_eventViewSet, EventViewSet
+from .views import TypeEventViewSet, EventViewSet
 
 
 app_name = 'api'
 
 router = DefaultRouter()
 
-router.register('types_event', Type_eventViewSet, basename='types_event')
+router.register('types_event', TypeEventViewSet, basename='types_event')
 router.register('events', EventViewSet, basename='events')
 
 urlpatterns = [

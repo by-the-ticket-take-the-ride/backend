@@ -1,9 +1,9 @@
 from django.contrib import admin
-from .models import Type_event, Event, Ticket, Favorite, Place, City
+from .models import TypeEvent, Event, Ticket, Favorite, Place, City
 
 
-@admin.register(Type_event)
-class Type_eventAdmin(admin.ModelAdmin):
+@admin.register(TypeEvent)
+class TypeEventAdmin(admin.ModelAdmin):
     list_display = ('name', 'slug')
 
 

@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
-class Type_event(models.Model):
+class TypeEvent(models.Model):
     """Тип мероприятия."""
     name = models.CharField(
         max_length=50,
@@ -76,7 +76,7 @@ class Place(models.Model):
 class Event(models.Model):
     """Модель мероприятия."""
     type_event = models.ForeignKey(
-        Type_event,
+        TypeEvent,
         on_delete=models.CASCADE,
         verbose_name='Тип мероприятия',
         help_text='Тип мероприятия',

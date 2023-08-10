@@ -1,18 +1,18 @@
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
-from events.models import Type_event, Event
+from events.models import TypeEvent, Event
 
 
-class Type_eventSerializer(serializers.ModelSerializer):
+class TypeEventSerializer(serializers.ModelSerializer):
     """Серилизатор типа мероприятия."""
     class Meta:
-        model = Type_event
+        model = TypeEvent
         fields = ('id', 'name', 'slug')
 
 
 class EventSerializer(serializers.ModelSerializer):
     """Серилизатор мероприятия."""
-    type_event = Type_eventSerializer(read_only=True)
+    type_event = TypeEventSerializer(read_only=True)
     image = Base64ImageField()
     class Meta:
         model = Event
