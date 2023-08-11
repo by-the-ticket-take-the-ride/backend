@@ -2,9 +2,9 @@ name: Django-app workflow
 
 on:
     push:
-        branches: [master, develop,dev/add-worflow-test-PEP]
+        branches: [master, develop]
     pull_request: 
-        branches: [master, develop,dev/add-worflow-test-PEP]
+        branches: [master, develop]
 
 jobs: 
     tests: 
