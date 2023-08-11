@@ -1,7 +1,8 @@
-from django.shortcuts import render
 from rest_framework import viewsets
-from events.models import TypeEvent, Event
-from .serializers import TypeEventSerializer, EventSerializer
+
+from events.models import Event, TypeEvent
+
+from .serializers import EventSerializer, TypeEventSerializer
 
 
 class TypeEventViewSet(viewsets.ModelViewSet):
@@ -14,4 +15,3 @@ class EventViewSet(viewsets.ModelViewSet):
     """Вьюсет для мероприятия."""
     queryset = Event.objects.all()
     serializer_class = EventSerializer
-
