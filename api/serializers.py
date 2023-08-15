@@ -1,7 +1,6 @@
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
-
-from events.models import Event, TypeEvent
+from events.models import Event, TypeEvent, Favorite
 
 
 class TypeEventSerializer(serializers.ModelSerializer):
@@ -15,6 +14,7 @@ class EventSerializer(serializers.ModelSerializer):
     """Серилизатор мероприятия."""
     type_event = TypeEventSerializer(read_only=True)
     image = Base64ImageField()
+    is_favorited = serializers.SerializerMethodField()
 
     class Meta:
         model = Event
@@ -26,16 +26,13 @@ class EventSerializer(serializers.ModelSerializer):
             'date_event',
             'time_event',
             'image',
+            'is_favorited',
         )
 
-
-class ListEventsSerializer(serializers.ModelSerializer):
-    "Сериализатор мероприятий на главной странице"
-    class Meta:
-        model = Event
-        fields = (
-            'name',
-            'place',
-            'date_event',
-            'time_event'
-        )
+    def get_is_favorited(self, obj):
+        request = self.context.get("request")
+        if not request or request.user.is_anonymous:
+            return False
+        return Favorite.objects.filter(
+            user=request.user, event=obj
+        ).exists()
