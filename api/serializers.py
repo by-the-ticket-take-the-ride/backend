@@ -36,3 +36,10 @@ class EventSerializer(serializers.ModelSerializer):
         return Favorite.objects.filter(
             user=request.user, event=obj
         ).exists()
+
+
+class FavoriteSerializer(serializers.ModelSerializer):
+    "Сериализатор избранного."
+    class Meta:
+        model = Favorite
+        fields = '__all__'
