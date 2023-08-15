@@ -27,3 +27,15 @@ class EventSerializer(serializers.ModelSerializer):
             'time_event',
             'image',
         )
+
+
+class ListEventsSerializer(serializers.ModelSerializer):
+    "Сериализатор мероприятий на главной странице"
+    class Meta:
+        model = Event
+        fields = (
+            'name',
+            'place',
+            'date_event',
+            'time_event'
+        )
