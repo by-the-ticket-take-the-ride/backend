@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 
 from .serializers import (EventSerializer, TypeEventSerializer,
                           FavoriteSerializer)
+from rest_framework import serializers
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import permissions
@@ -30,6 +31,9 @@ class EventViewSet(viewsets.ModelViewSet):
         if request.method == 'POST':
             data = {'user': request.user.id, 'event': pk}
             serializer = FavoriteSerializer(data=data)
+            if Favorite.objects.filter(user=request.user.id,
+                                       event=pk).exists():
+                raise serializers.ValidationError('Уже в избранном')
             if serializer.is_valid():
                 serializer.save()
                 return Response(data=serializer.data, status=HTTPStatus.OK)

@@ -1,6 +1,5 @@
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
-from rest_framework import permissions
 from events.models import Event, TypeEvent, Favorite
 from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
 
@@ -41,9 +40,6 @@ class EventSerializer(serializers.ModelSerializer):
 
 
 @extend_schema_serializer(
-    exclude_fields=[
-        'user'
-    ],
     examples=[
         OpenApiExample(
             'Пример запроса',
@@ -57,8 +53,7 @@ class EventSerializer(serializers.ModelSerializer):
 )
 class FavoriteSerializer(serializers.ModelSerializer):
     """Сериализатор избранного."""
-    permission_classes = (permissions.IsAuthenticated,)
 
     class Meta:
         model = Favorite
-        fields = '__all__'
+        fields = ('user', 'event')
