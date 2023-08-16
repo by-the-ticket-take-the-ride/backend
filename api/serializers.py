@@ -1,6 +1,8 @@
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
+from rest_framework import permissions
 from events.models import Event, TypeEvent, Favorite
+from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
 
 
 class TypeEventSerializer(serializers.ModelSerializer):
@@ -38,8 +40,25 @@ class EventSerializer(serializers.ModelSerializer):
         ).exists()
 
 
+@extend_schema_serializer(
+    exclude_fields=[
+        'user'
+    ],
+    examples=[
+        OpenApiExample(
+            'Пример запроса',
+            description='В поле id указывается на pk мероприятия',
+            value={
+                'id': '1',
+            },
+            request_only=True
+        )
+    ]
+)
 class FavoriteSerializer(serializers.ModelSerializer):
-    "Сериализатор избранного."
+    """Сериализатор избранного."""
+    permission_classes = (permissions.IsAuthenticated,)
+
     class Meta:
         model = Favorite
         fields = '__all__'
