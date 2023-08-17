@@ -1,16 +1,15 @@
-from rest_framework import viewsets
-
-from events.models import Event, TypeEvent, Favorite
-from django.shortcuts import get_object_or_404
-
-from .serializers import (EventSerializer, TypeEventSerializer,
-                          FavoriteSerializer)
-from rest_framework import serializers
-from rest_framework.decorators import action
-from drf_spectacular.utils import extend_schema
-from rest_framework.response import Response
-from rest_framework import permissions
 from http import HTTPStatus
+
+from django.shortcuts import get_object_or_404
+from drf_spectacular.utils import extend_schema
+from rest_framework import permissions, serializers, viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
+
+from events.models import Event, Favorite, TypeEvent
+
+from .serializers import (EventSerializer, FavoriteSerializer,
+                          TypeEventSerializer)
 
 
 class TypeEventViewSet(viewsets.ModelViewSet):
@@ -43,11 +42,10 @@ class EventViewSet(viewsets.ModelViewSet):
                 serializer.save()
                 return Response(status=HTTPStatus.OK)
             return Response(serializer.errors, status=HTTPStatus.BAD_REQUEST)
-        if request.method == "DELETE":
-            user = request.user
-            event = get_object_or_404(Event, id=pk)
-            favorite = get_object_or_404(Favorite,
-                                         user=user,
-                                         event=event)
-            favorite.delete()
-            return Response(status=HTTPStatus.NO_CONTENT)
+        user = request.user
+        event = get_object_or_404(Event, id=pk)
+        favorite = get_object_or_404(Favorite,
+                                     user=user,
+                                     event=event)
+        favorite.delete()
+        return Response(status=HTTPStatus.NO_CONTENT)
