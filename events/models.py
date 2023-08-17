@@ -1,6 +1,5 @@
-from django.db import models
 from django.contrib.auth import get_user_model
-
+from django.db import models
 
 User = get_user_model()
 
@@ -26,7 +25,7 @@ class TypeEvent(models.Model):
 
     def __str__(self):
         return self.name
-    
+
 
 class City(models.Model):
     """Модель города."""
@@ -43,7 +42,7 @@ class City(models.Model):
 
     def __str__(self):
         return self.name
-    
+
 
 class Place(models.Model):
     """Модель места проведения мероприятия."""
@@ -72,6 +71,7 @@ class Place(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class Event(models.Model):
     """Модель мероприятия."""
@@ -161,7 +161,7 @@ class Ticket(models.Model):
 
     def __str__(self):
         return f'{self.user} купил билет на {self.event}'
-    
+
 
 class Favorite(models.Model):
     """Модель избранного мероприятия."""

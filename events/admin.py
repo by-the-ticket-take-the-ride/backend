@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import TypeEvent, Event, Ticket, Favorite, Place, City
+
+from .models import City, Event, Favorite, Place, Ticket, TypeEvent
 
 
 @admin.register(TypeEvent)
