@@ -95,6 +95,10 @@ class Place(models.Model):
         help_text='Схема зала',
         related_name='hall_types'
     )
+    max_hall_capacity = models.PositiveSmallIntegerField(
+        verbose_name='Максимальная вместимость зала',
+        help_text='Максимальная вместимость зала'
+    )
 
     class Meta:
         verbose_name = 'Место мероприятия'
