@@ -1,8 +1,9 @@
-import os
 import json
+import os
 
 from django.core.management.base import BaseCommand, CommandError
-from events.models import TypeEvent, City
+
+from events.models import City, TypeEvent
 from wiki.settings import TEST_DATA_DIR
 
 
@@ -57,7 +58,7 @@ class Command(BaseCommand):
             or options.get("write_cities")
             or options.get("write_types")
             or options.get("read_types")
-            ):
+        ):
             raise CommandError(
                 'Use --read_cities or --write_cities or'
                 '--write_types or --read_types argument'
