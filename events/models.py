@@ -44,6 +44,30 @@ class City(models.Model):
         return self.name
 
 
+class TypeHall(models.Model):
+    """Модель схемы зала."""
+
+    name = models.CharField(
+        max_length=50,
+        verbose_name='Название схемы зала',
+        help_text='Название схемы зала',
+        unique=True
+    )
+    zone = models.CharField(
+        max_length=50,
+        verbose_name='Зоны в зале',
+        help_text='Зоны в зале'
+    )
+    row = models.PositiveSmallIntegerField(
+        verbose_name='Ряды в зоне зала',
+        help_text='Ряды в зоне зала'
+    )
+    seat = models.PositiveSmallIntegerField(
+        verbose_name='Места в зоне зала',
+        help_text='Места в зоне зала'
+    )
+
+
 class Place(models.Model):
     """Модель места проведения мероприятия."""
     name = models.CharField(
@@ -63,6 +87,13 @@ class Place(models.Model):
         verbose_name='Город',
         help_text='Город',
         related_name='places'
+    )
+    type = models.ForeignKey(
+        TypeHall,
+        on_delete=models.CASCADE,
+        verbose_name='Схема зала',
+        help_text='Схема зала',
+        related_name='hall_types'
     )
 
     class Meta:

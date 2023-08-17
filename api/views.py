@@ -1,8 +1,20 @@
 from rest_framework import viewsets
 
-from events.models import Event, TypeEvent
+from events.models import Event, TypeEvent, City, TypeHall
 
-from .serializers import EventSerializer, TypeEventSerializer
+from .serializers import EventSerializer, TypeEventSerializer, CitySerialier, TypeHallSerializer
+
+
+class CityViewSet(viewsets.ReadOnlyModelViewSet):
+    """Вьюсет для городов."""
+    queryset = City.objects.all()
+    serializer_class = CitySerialier
+
+
+class TypeHallViewSet(viewsets.ReadOnlyModelViewSet):
+    """Вьюсет для типа схемы зала."""
+    queryset = TypeHall.objects.all()
+    serializer_class = TypeHallSerializer
 
 
 class TypeEventViewSet(viewsets.ModelViewSet):
