@@ -14,6 +14,6 @@ router.register('hall_types', TypeHallViewSet, basename='hall_types')
 
 urlpatterns = [
     path('', include(router.urls)),
-    # path('', include('djoser.urls')),
-    # path('auth/', include('djoser.urls.authtoken')),
+    path('', include('djoser.urls')),
+    path('auth/', include('djoser.urls.authtoken')),
 ]
