@@ -7,6 +7,7 @@ from .serializers import (EventSerializer, TypeEventSerializer,
                           FavoriteSerializer)
 from rest_framework import serializers
 from rest_framework.decorators import action
+from drf_spectacular.utils import extend_schema
 from rest_framework.response import Response
 from rest_framework import permissions
 from http import HTTPStatus
@@ -23,11 +24,15 @@ class EventViewSet(viewsets.ModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
 
-    @action(detail=True, methods=['post'],
+    @extend_schema(responses={
+                   '204': FavoriteSerializer})
+    @action(detail=True, methods=['post', 'delete'],
             permission_classes=[permissions.IsAuthenticated],
             serializer_class=FavoriteSerializer)
     def favorite(self, request, pk):
-        """Добавление мероприятия в избранное."""
+        """Добавление мероприятия в избранное.
+           Удаление мероприятия из избранного.
+        """
         if request.method == 'POST':
             data = {'user': request.user.id, 'event': pk}
             serializer = FavoriteSerializer(data=data)
@@ -36,16 +41,13 @@ class EventViewSet(viewsets.ModelViewSet):
                 raise serializers.ValidationError('Уже в избранном')
             if serializer.is_valid():
                 serializer.save()
-                return Response(data=serializer.data, status=HTTPStatus.OK)
+                return Response(status=HTTPStatus.OK)
             return Response(serializer.errors, status=HTTPStatus.BAD_REQUEST)
-
-    @favorite.mapping.delete
-    def delete_favorite(self, request, pk):
-        """Удаление мероприятия из избранного."""
-        user = request.user
-        event = get_object_or_404(Event, id=pk)
-        favorite = get_object_or_404(Favorite,
-                                     user=user,
-                                     event=event)
-        favorite.delete()
-        return Response(status=HTTPStatus.NO_CONTENT)
+        if request.method == "DELETE":
+            user = request.user
+            event = get_object_or_404(Event, id=pk)
+            favorite = get_object_or_404(Favorite,
+                                         user=user,
+                                         event=event)
+            favorite.delete()
+            return Response(status=HTTPStatus.NO_CONTENT)
