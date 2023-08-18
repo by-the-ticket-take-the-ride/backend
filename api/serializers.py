@@ -24,7 +24,7 @@ class TypeHallSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TypeHall
-        fields = ('id', 'name', 'zone', 'row', 'seat')
+        fields = ('id', 'name', 'zone', 'row', 'seat', 'max_hall_capacity')
 
 
 class PlaceSerializer(serializers.ModelSerializer):
@@ -35,7 +35,7 @@ class PlaceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Place
-        fields = ('id', 'name', 'address', 'city', 'type', 'max_hall_capacity')
+        fields = ('id', 'name', 'address', 'city', 'type')
 
 
 class EventSerializer(serializers.ModelSerializer):

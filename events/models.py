@@ -44,19 +44,14 @@ class City(models.Model):
         return self.name
 
 
-class TypeHall(models.Model):
-    """Модель схемы зала."""
+class ZonesHall(models.Model):
+    """Модель зон зала."""
 
     name = models.CharField(
         max_length=50,
-        verbose_name='Название схемы зала',
-        help_text='Название схемы зала',
+        verbose_name='Зона зала',
+        help_text='Зона зала',
         unique=True
-    )
-    zone = models.CharField(
-        max_length=50,
-        verbose_name='Зоны в зале',
-        help_text='Зоны в зале'
     )
     row = models.PositiveSmallIntegerField(
         verbose_name='Ряды в зоне зала',
@@ -66,6 +61,42 @@ class TypeHall(models.Model):
         verbose_name='Места в зоне зала',
         help_text='Места в зоне зала'
     )
+
+    class Meta:
+        verbose_name = 'Зоны зала'
+        verbose_name_plural = 'Зоны залов'
+
+    def __str__(self):
+        return self.name
+
+
+class TypeHall(models.Model):
+    """Модель схемы зала."""
+
+    name = models.CharField(
+        max_length=50,
+        verbose_name='Название схемы зала',
+        help_text='Название схемы зала',
+        unique=True
+    )
+    zone = models.ForeignKey(
+        ZonesHall,
+        on_delete=models.CASCADE,
+        verbose_name='Зона зала',
+        help_text='Зона зала',
+        related_name='zones'
+    )
+    max_hall_capacity = models.PositiveSmallIntegerField(
+        verbose_name='Максимальная вместимость зала',
+        help_text='Максимальная вместимость зала'
+    )
+
+    class Meta:
+        verbose_name = 'Схема зала'
+        verbose_name_plural = 'Схемы залов'
+
+    def __str__(self):
+        return self.name
 
 
 class Place(models.Model):
@@ -94,10 +125,6 @@ class Place(models.Model):
         verbose_name='Схема зала',
         help_text='Схема зала',
         related_name='hall_types'
-    )
-    max_hall_capacity = models.PositiveSmallIntegerField(
-        verbose_name='Максимальная вместимость зала',
-        help_text='Максимальная вместимость зала'
     )
 
     class Meta:
