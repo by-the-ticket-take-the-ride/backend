@@ -2,7 +2,7 @@ from drf_extra_fields.fields import Base64ImageField
 from drf_spectacular.utils import extend_schema_serializer
 from rest_framework import serializers
 
-from events.models import Event, TypeEvent, Place, City, TypeHall
+from events.models import Event, TypeEvent, Place, City, TypeHall, Favorite
 
 
 class TypeEventSerializer(serializers.ModelSerializer):

@@ -1,6 +1,16 @@
 from django.contrib import admin
 
-from .models import City, Event, Favorite, Place, Ticket, TypeEvent, TypeHall, ZonesHall
+from .models import (
+    City,
+    Event,
+    Favorite,
+    Place,
+    Ticket,
+    TypeEvent,
+    TypeHall,
+    ZoneHall,
+    TypeZoneHall
+)
 
 
 @admin.register(TypeEvent)
@@ -18,12 +28,17 @@ class CityAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
 
 
+class ZoneInLine(admin.StackedInline):
+    model = TypeZoneHall
+
+
 @admin.register(TypeHall)
 class TypeHallAdmin(admin.ModelAdmin):
+    inlines = [ZoneInLine]
     list_display = ('name', 'max_hall_capacity')
 
 
-@admin.register(ZonesHall)
+@admin.register(ZoneHall)
 class ZonesHallAdmin(admin.ModelAdmin):
     list_display = ('name',)
 

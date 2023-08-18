@@ -44,7 +44,7 @@ class City(models.Model):
         return self.name
 
 
-class ZonesHall(models.Model):
+class ZoneHall(models.Model):
     """Модель зон зала."""
 
     name = models.CharField(
@@ -79,9 +79,9 @@ class TypeHall(models.Model):
         help_text='Название схемы зала',
         unique=True
     )
-    zone = models.ForeignKey(
-        ZonesHall,
-        on_delete=models.CASCADE,
+    zone = models.ManyToManyField(
+        ZoneHall,
+        through='TypeZoneHall',
         verbose_name='Зона зала',
         help_text='Зона зала',
         related_name='zones'
@@ -97,6 +97,23 @@ class TypeHall(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class TypeZoneHall(models.Model):
+
+    type = models.ForeignKey(TypeHall, on_delete=models.CASCADE)
+    zones = models.ForeignKey(ZoneHall, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.type} {self.zones}'
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=('type', 'zones'),
+                name='type_zoness'
+            )
+        ]
 
 
 class Place(models.Model):
