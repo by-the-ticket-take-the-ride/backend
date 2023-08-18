@@ -1,6 +1,7 @@
 from http import HTTPStatus
 
 from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema
 from rest_framework import permissions, serializers, viewsets
 from rest_framework.decorators import action
@@ -8,6 +9,7 @@ from rest_framework.response import Response
 
 from events.models import Event, Favorite, TypeEvent
 
+from .filters import EventFilter
 from .serializers import (EventSerializer, FavoriteSerializer,
                           TypeEventSerializer)
 
@@ -22,6 +24,8 @@ class EventViewSet(viewsets.ModelViewSet):
     """Вьюсет для мероприятия."""
     queryset = Event.objects.all()
     serializer_class = EventSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = EventFilter
 
     @extend_schema(responses={
                    '204': FavoriteSerializer})
