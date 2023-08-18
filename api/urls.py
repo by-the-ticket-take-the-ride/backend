@@ -11,6 +11,7 @@ router.register('types_event', TypeEventViewSet, basename='types_event')
 router.register('events', EventViewSet, basename='events')
 router.register('city', CityViewSet, basename='cities')
 router.register('hall_types', TypeHallViewSet, basename='hall_types')
+# router.register('favorite', FavoriteViewSet, basename='favotite')
 
 urlpatterns = [
     path('', include(router.urls)),
