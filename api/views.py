@@ -47,8 +47,6 @@ class EventViewSet(viewsets.ModelViewSet):
         elif city_name_ip:
             queryset = queryset.filter(
                 place__city__name_en__iexact=city_name_ip)
-        else:
-            queryset = queryset.all()
 
         return queryset
 
