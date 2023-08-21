@@ -2,8 +2,8 @@ import csv
 import logging
 
 from django.core.management.base import BaseCommand
-from events.models import City
 
+from events.models import City
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',

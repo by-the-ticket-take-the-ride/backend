@@ -3,17 +3,17 @@ from http import HTTPStatus
 import requests
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from ipware import get_client_ip
 from drf_spectacular.utils import extend_schema
+from ipware import get_client_ip
 from rest_framework import permissions, serializers, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from events.models import Event, Favorite, TypeEvent
 
+from .filters import EventFilter
 from .serializers import (EventSerializer, FavoriteSerializer,
                           TypeEventSerializer)
-from .filters import EventFilter
 
 
 class TypeEventViewSet(viewsets.ModelViewSet):
