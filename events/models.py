@@ -30,6 +30,12 @@ class TypeEvent(models.Model):
 class City(models.Model):
     """Модель города."""
     name = models.CharField(
+        max_length=100,
+        verbose_name='Город',
+        help_text='Город',
+        unique=True
+    )
+    name_en = models.CharField(
         max_length=50,
         verbose_name='Город',
         help_text='Город',
