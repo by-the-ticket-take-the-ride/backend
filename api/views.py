@@ -30,8 +30,6 @@ class EventViewSet(viewsets.ModelViewSet):
     filterset_class = EventFilter
 
     def filter_queryset(self, queryset):
-        queryset = super().filter_queryset(queryset)
-
         # Определение города по IP-адресу
         client_ip, _ = get_client_ip(self.request)
         response = requests.get(f'http://ipinfo.io/{client_ip}/json')
@@ -48,7 +46,7 @@ class EventViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(
                 place__city__name_en__iexact=city_name_ip)
 
-        return queryset
+        return super().filter_queryset(queryset)
 
     @extend_schema(responses={
                    '204': FavoriteSerializer})
