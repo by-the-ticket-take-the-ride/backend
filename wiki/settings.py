@@ -17,7 +17,6 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://*.spisok.ddns.net',
     'http://*.localhost',
 ]
 
@@ -38,6 +37,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'djoser',
+    'ipware',
     'django_filters',
 ]
 
