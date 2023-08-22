@@ -2,7 +2,14 @@ from drf_extra_fields.fields import Base64ImageField
 from drf_spectacular.utils import extend_schema_serializer
 from rest_framework import serializers
 
-from events.models import Event, Favorite, TypeEvent
+from events.models import City, Event, Favorite, Place, TypeEvent
+
+
+class CitySerializer(serializers.ModelSerializer):
+    """Сериализатор города."""
+    class Meta:
+        model = City
+        fields = ('id', 'name')
 
 
 class TypeEventSerializer(serializers.ModelSerializer):
@@ -12,17 +19,28 @@ class TypeEventSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'slug')
 
 
+class PlaceSerializer(serializers.ModelSerializer):
+    """Сериализатор места мероприятия."""
+    city = CitySerializer(read_only=True)
+
+    class Meta:
+        model = Place
+        fields = ('id', 'name', 'address', 'city')
+
+
 class EventSerializer(serializers.ModelSerializer):
     """Серилизатор мероприятия."""
     type_event = TypeEventSerializer(read_only=True)
     image = Base64ImageField()
     is_favorited = serializers.SerializerMethodField()
+    place = PlaceSerializer(read_only=True)
 
     class Meta:
         model = Event
         fields = (
             'id',
             'type_event',
+            'place',
             'name',
             'description',
             'date_event',

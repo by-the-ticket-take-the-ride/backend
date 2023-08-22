@@ -9,11 +9,20 @@ from rest_framework import permissions, serializers, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from events.models import Event, Favorite, TypeEvent
+from events.models import City, Event, Favorite, TypeEvent
 
-from .filters import EventFilter
-from .serializers import (EventSerializer, FavoriteSerializer,
+from .filters import CityFilter, EventFilter
+from .serializers import (CitySerializer, EventSerializer, FavoriteSerializer,
                           TypeEventSerializer)
+
+
+class CityViewSet(viewsets.ModelViewSet):
+    """Вьюсет для города."""
+    queryset = City.objects.all()
+    serializer_class = CitySerializer
+    filter_backends = (DjangoFilterBackend,)
+    pagination_class = None
+    filterset_class = CityFilter
 
 
 class TypeEventViewSet(viewsets.ModelViewSet):
