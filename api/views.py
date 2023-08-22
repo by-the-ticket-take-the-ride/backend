@@ -5,37 +5,59 @@ from rest_framework import permissions, serializers, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from events.models import Event, TypeEvent, City, TypeHall, Favorite
+from events.models import (
+    Event,
+    TypeEvent,
+    City,
+    TypeHall,
+    Favorite,
+    ZoneHall,
+    Ticket
+)
 
 from .serializers import (
     EventSerializer,
     TypeEventSerializer,
     CitySerialier,
     TypeHallSerializer,
-    FavoriteSerializer
+    FavoriteSerializer,
+    ZoneHallSerializer,
+    GetTicketSerializer,
+    PostTicketSerializer
 )
 
 
 class CityViewSet(viewsets.ReadOnlyModelViewSet):
     """Вьюсет для городов."""
+
     queryset = City.objects.all()
     serializer_class = CitySerialier
 
 
 class TypeHallViewSet(viewsets.ReadOnlyModelViewSet):
     """Вьюсет для типа схемы зала."""
+
     queryset = TypeHall.objects.all()
     serializer_class = TypeHallSerializer
 
 
+class ZoneHallViewSet(viewsets.ReadOnlyModelViewSet):
+    """Вьюсет для зон схемы зала."""
+
+    queryset = ZoneHall.objects.all()
+    serializer_class = ZoneHallSerializer
+
+
 class TypeEventViewSet(viewsets.ModelViewSet):
     """Вьюсет для типа мероприятия."""
+
     queryset = TypeEvent.objects.all()
     serializer_class = TypeEventSerializer
 
 
 class EventViewSet(viewsets.ModelViewSet):
     """Вьюсет для мероприятия."""
+
     queryset = Event.objects.all()
     serializer_class = EventSerializer
 
@@ -65,3 +87,15 @@ class EventViewSet(viewsets.ModelViewSet):
                                      event=event)
         favorite.delete()
         return Response(status=HTTPStatus.NO_CONTENT)
+
+
+class TicketViewSet(viewsets.ModelViewSet):
+    """Вьюсет для билетов."""
+
+    queryset = Ticket.objects.all()
+    http_method_names = ['get', 'post']
+
+    def get_serializer_class(self):
+        if self.action in ('list', 'retrieve'):
+            return GetTicketSerializer
+        return PostTicketSerializer

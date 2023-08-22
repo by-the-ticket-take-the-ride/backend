@@ -61,6 +61,10 @@ class ZoneHall(models.Model):
         verbose_name='Места в зоне зала',
         help_text='Места в зоне зала'
     )
+    price = models.PositiveSmallIntegerField(
+        verbose_name='Стоимость билетов в этой зоне',
+        help_text='Стоимость билетов в этой зоне'
+    )
 
     class Meta:
         verbose_name = 'Зоны зала'
@@ -105,9 +109,11 @@ class TypeZoneHall(models.Model):
     zones = models.ForeignKey(ZoneHall, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.type} {self.zones}'
+        return f'Схема зала - {self.type}, зона - {self.zones}'
 
     class Meta:
+        verbose_name = 'Зоны зала'
+        verbose_name_plural = 'Зоны залов'
         constraints = [
             models.UniqueConstraint(
                 fields=('type', 'zones'),
@@ -214,19 +220,42 @@ class Event(models.Model):
 
 class Ticket(models.Model):
     """Модель билета."""
-    user = models.ForeignKey(
+    guest = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='events',
-        verbose_name='Покупатель',
-        help_text='Покупатель',
+        related_name='users',
+        verbose_name='Гость мероприятия',
+        help_text='Гость мероприятия',
     )
     event = models.ForeignKey(
         Event,
         on_delete=models.CASCADE,
-        # related_name='events',
+        related_name='events',
         verbose_name='Мероприятие',
         help_text='Мероприятие',
+    )
+    zone_hall = models.ForeignKey(
+        ZoneHall,
+        on_delete=models.CASCADE,
+        related_name='zones_hall',
+        verbose_name='Зона зала',
+        help_text='Зона зала'
+    )
+    row = models.PositiveSmallIntegerField(
+        verbose_name='Ряд',
+        help_text='Ряд'
+    )
+    seat = models.PositiveSmallIntegerField(
+        verbose_name='Место',
+        help_text='Место'
+    )
+    price = models.PositiveSmallIntegerField(
+        verbose_name='Стоимость',
+        help_text='Стоимость'
+    )
+    is_paid = models.BooleanField(
+        verbose_name='Оплачено',
+        help_text='Оплачено'
     )
     pub_date = models.DateTimeField(
         verbose_name='Дата покупки',
@@ -237,6 +266,12 @@ class Ticket(models.Model):
         verbose_name = 'Билет'
         verbose_name_plural = 'Билеты'
         ordering = ('-pub_date',)
+        constraints = [
+            models.UniqueConstraint(
+                fields=('guest', 'row', 'seat'),
+                name='unique_ticket',
+            )
+        ]
 
     def __str__(self):
         return f'{self.user} купил билет на {self.event}'

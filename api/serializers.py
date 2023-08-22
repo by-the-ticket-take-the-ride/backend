@@ -2,11 +2,30 @@ from drf_extra_fields.fields import Base64ImageField
 from drf_spectacular.utils import extend_schema_serializer
 from rest_framework import serializers
 
-from events.models import Event, TypeEvent, Place, City, TypeHall, Favorite
+from events.models import (
+    Event,
+    TypeEvent,
+    Place,
+    City,
+    TypeHall,
+    Favorite,
+    ZoneHall,
+    Ticket
+)
+from users.models import User
+
+
+class UserInfoSerializer(serializers.ModelSerializer):
+    """Данные о пользователе."""
+
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'email', 'phone', 'telegram',)
 
 
 class TypeEventSerializer(serializers.ModelSerializer):
     """Серилизатор типа мероприятия."""
+
     class Meta:
         model = TypeEvent
         fields = ('id', 'name', 'slug')
@@ -20,12 +39,22 @@ class CitySerialier(serializers.ModelSerializer):
         fields = ('id', 'name')
 
 
+class ZoneHallSerializer(serializers.ModelSerializer):
+    """Сериализатор для зон схемы зала."""
+
+    class Meta:
+        model = ZoneHall
+        fields = ('id', 'name', 'row', 'seat', 'price')
+
+
 class TypeHallSerializer(serializers.ModelSerializer):
     """Сериализатор типа зала."""
 
+    zone = ZoneHallSerializer(many=True, read_only=True)
+
     class Meta:
         model = TypeHall
-        fields = ('id', 'name', 'zone', 'row', 'seat', 'max_hall_capacity')
+        fields = ('id', 'name', 'zone', 'max_hall_capacity')
 
 
 class PlaceSerializer(serializers.ModelSerializer):
@@ -41,6 +70,7 @@ class PlaceSerializer(serializers.ModelSerializer):
 
 class EventSerializer(serializers.ModelSerializer):
     """Серилизатор мероприятия."""
+
     type_event = TypeEventSerializer(read_only=True)
     image = Base64ImageField()
     place = PlaceSerializer(read_only=True)
@@ -80,3 +110,60 @@ class FavoriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Favorite
         fields = ('user', 'event')
+
+
+class GetTicketSerializer(serializers.ModelSerializer):
+    """Сериализатор билетов метод GET."""
+
+    guest = UserInfoSerializer(many=False, read_only=True)
+    event = EventSerializer(many=False, read_only=True)
+    zone_hall = ZoneHallSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = Ticket
+        fields = (
+            'id',
+            'event',
+            'zone_hall',
+            'row',
+            'seat',
+            'price',
+            'guest',
+            'is_paid'
+        )
+
+
+class PostTicketSerializer(serializers.ModelSerializer):
+    """Сериализатор билетов метод POST."""
+
+    class Meta:
+        model = Ticket
+        fields = (
+            'id',
+            'event',
+            'zone_hall',
+            'row',
+            'seat',
+            'guest',
+            'is_paid'
+        )
+
+    def to_representation(self, instance):
+        serializer = GetTicketSerializer(instance)
+        return serializer.data
+
+    def create(self, validated_data):
+        zone_hall = validated_data.get('zone_hall')
+        validated_data['price'] = zone_hall.price
+        guest = validated_data.get('guest')
+        row = validated_data.get('row')
+        seat = validated_data.get('seat')
+        if Ticket.objects.filter(
+            guest=guest,
+            row=row,
+            seat=seat
+        ).exists():
+            raise serializers.ValidationError(
+                'Билет уже куплен.'
+            )
+        return super().create(validated_data)

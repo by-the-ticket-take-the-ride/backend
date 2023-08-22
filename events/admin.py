@@ -9,7 +9,7 @@ from .models import (
     TypeEvent,
     TypeHall,
     ZoneHall,
-    TypeZoneHall
+    TypeZoneHall,
 )
 
 
