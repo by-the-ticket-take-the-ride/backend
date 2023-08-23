@@ -59,7 +59,7 @@ class TypeHallSerializer(serializers.ModelSerializer):
 class PlaceSerializer(serializers.ModelSerializer):
     """Сериализатор площадки"""
 
-    city = CitySerialier(read_only=True)
+    city = CitySerializer(read_only=True)
     type = TypeHallSerializer(read_only=True)
 
     class Meta:
