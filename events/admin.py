@@ -1,16 +1,7 @@
 from django.contrib import admin
 
-from .models import (
-    City,
-    Event,
-    Favorite,
-    Place,
-    Ticket,
-    TypeEvent,
-    TypeHall,
-    ZoneHall,
-    TypeZoneHall,
-)
+from .models import (City, Event, Favorite, Place, Ticket, TypeEvent, TypeHall,
+                     TypeZoneHall, ZoneHall)
 
 
 @admin.register(TypeEvent)

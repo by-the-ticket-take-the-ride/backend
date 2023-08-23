@@ -1,17 +1,9 @@
 from drf_extra_fields.fields import Base64ImageField
 from drf_spectacular.utils import extend_schema_serializer
-from rest_framework import serializers, exceptions
+from rest_framework import exceptions, serializers
 
-from events.models import (
-    Event,
-    TypeEvent,
-    Place,
-    City,
-    TypeHall,
-    Favorite,
-    ZoneHall,
-    Ticket
-)
+from events.models import (City, Event, Favorite, Place, Ticket, TypeEvent,
+                           TypeHall, ZoneHall)
 from users.models import User
 
 
