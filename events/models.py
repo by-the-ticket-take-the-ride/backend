@@ -274,7 +274,7 @@ class Ticket(models.Model):
         ]
 
     def __str__(self):
-        return f'{self.user} купил билет на {self.event}'
+        return f'{self.guest} купил билет на {self.event}'
 
 
 class Favorite(models.Model):

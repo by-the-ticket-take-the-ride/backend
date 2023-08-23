@@ -94,8 +94,12 @@ class TicketViewSet(viewsets.ModelViewSet):
 
     queryset = Ticket.objects.all()
     http_method_names = ['get', 'post']
+    perimisson_classes = (permissions.IsAuthenticated,)
 
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve'):
             return GetTicketSerializer
         return PostTicketSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(guest=self.request.user)

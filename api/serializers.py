@@ -1,6 +1,6 @@
 from drf_extra_fields.fields import Base64ImageField
 from drf_spectacular.utils import extend_schema_serializer
-from rest_framework import serializers
+from rest_framework import serializers, exceptions
 
 from events.models import (
     Event,
@@ -136,6 +136,10 @@ class GetTicketSerializer(serializers.ModelSerializer):
 class PostTicketSerializer(serializers.ModelSerializer):
     """Сериализатор билетов метод POST."""
 
+    guest = UserInfoSerializer(
+        many=False, default=serializers.CurrentUserDefault()
+    )
+
     class Meta:
         model = Ticket
         fields = (
@@ -153,15 +157,17 @@ class PostTicketSerializer(serializers.ModelSerializer):
         return serializer.data
 
     def create(self, validated_data):
+        user = self.context['request'].user
+        if not user.is_authenticated:
+            raise exceptions.NotAuthenticated(
+                'Пользователь не авторизован.'
+            )
         zone_hall = validated_data.get('zone_hall')
         validated_data['price'] = zone_hall.price
-        guest = validated_data.get('guest')
-        row = validated_data.get('row')
-        seat = validated_data.get('seat')
         if Ticket.objects.filter(
-            guest=guest,
-            row=row,
-            seat=seat
+            guest=validated_data.get('guest'),
+            row=validated_data.get('row'),
+            seat=validated_data.get('seat')
         ).exists():
             raise serializers.ValidationError(
                 'Билет уже куплен.'
