@@ -54,6 +54,84 @@ class City(models.Model):
         return self.name
 
 
+class ZoneHall(models.Model):
+    """Модель зон зала."""
+
+    name = models.CharField(
+        max_length=50,
+        verbose_name='Зона зала',
+        help_text='Зона зала',
+        unique=True
+    )
+    row = models.PositiveSmallIntegerField(
+        verbose_name='Ряды в зоне зала',
+        help_text='Ряды в зоне зала'
+    )
+    seat = models.PositiveSmallIntegerField(
+        verbose_name='Места в зоне зала',
+        help_text='Места в зоне зала'
+    )
+    price = models.PositiveSmallIntegerField(
+        verbose_name='Стоимость билетов в этой зоне',
+        help_text='Стоимость билетов в этой зоне'
+    )
+
+    class Meta:
+        verbose_name = 'Зоны зала'
+        verbose_name_plural = 'Зоны залов'
+
+    def __str__(self):
+        return self.name
+
+
+class TypeHall(models.Model):
+    """Модель схемы зала."""
+
+    name = models.CharField(
+        max_length=50,
+        verbose_name='Название схемы зала',
+        help_text='Название схемы зала',
+        unique=True
+    )
+    zone = models.ManyToManyField(
+        ZoneHall,
+        through='TypeZoneHall',
+        verbose_name='Зона зала',
+        help_text='Зона зала',
+        related_name='zones'
+    )
+    max_hall_capacity = models.PositiveSmallIntegerField(
+        verbose_name='Максимальная вместимость зала',
+        help_text='Максимальная вместимость зала'
+    )
+
+    class Meta:
+        verbose_name = 'Схема зала'
+        verbose_name_plural = 'Схемы залов'
+
+    def __str__(self):
+        return self.name
+
+
+class TypeZoneHall(models.Model):
+
+    type = models.ForeignKey(TypeHall, on_delete=models.CASCADE)
+    zones = models.ForeignKey(ZoneHall, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'Схема зала - {self.type}, зона - {self.zones}'
+
+    class Meta:
+        verbose_name = 'Зоны зала'
+        verbose_name_plural = 'Зоны залов'
+        constraints = [
+            models.UniqueConstraint(
+                fields=('type', 'zones'),
+                name='type_zoness'
+            )
+        ]
+
+
 class Place(models.Model):
     """Модель места проведения мероприятия."""
     name = models.CharField(
@@ -73,6 +151,13 @@ class Place(models.Model):
         verbose_name='Город',
         help_text='Город',
         related_name='places'
+    )
+    type = models.ForeignKey(
+        TypeHall,
+        on_delete=models.CASCADE,
+        verbose_name='Схема зала',
+        help_text='Схема зала',
+        related_name='hall_types'
     )
 
     class Meta:
@@ -145,19 +230,42 @@ class Event(models.Model):
 
 class Ticket(models.Model):
     """Модель билета."""
-    user = models.ForeignKey(
+    guest = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='events',
-        verbose_name='Покупатель',
-        help_text='Покупатель',
+        related_name='users',
+        verbose_name='Гость мероприятия',
+        help_text='Гость мероприятия',
     )
     event = models.ForeignKey(
         Event,
         on_delete=models.CASCADE,
-        # related_name='events',
+        related_name='events',
         verbose_name='Мероприятие',
         help_text='Мероприятие',
+    )
+    zone_hall = models.ForeignKey(
+        ZoneHall,
+        on_delete=models.CASCADE,
+        related_name='zones_hall',
+        verbose_name='Зона зала',
+        help_text='Зона зала'
+    )
+    row = models.PositiveSmallIntegerField(
+        verbose_name='Ряд',
+        help_text='Ряд'
+    )
+    seat = models.PositiveSmallIntegerField(
+        verbose_name='Место',
+        help_text='Место'
+    )
+    price = models.PositiveSmallIntegerField(
+        verbose_name='Стоимость',
+        help_text='Стоимость'
+    )
+    is_paid = models.BooleanField(
+        verbose_name='Оплачено',
+        help_text='Оплачено'
     )
     pub_date = models.DateTimeField(
         verbose_name='Дата покупки',
@@ -168,9 +276,15 @@ class Ticket(models.Model):
         verbose_name = 'Билет'
         verbose_name_plural = 'Билеты'
         ordering = ('-pub_date',)
+        constraints = [
+            models.UniqueConstraint(
+                fields=('guest', 'row', 'seat'),
+                name='unique_ticket',
+            )
+        ]
 
     def __str__(self):
-        return f'{self.user} купил билет на {self.event}'
+        return f'{self.guest} купил билет на {self.event}'
 
 
 class Favorite(models.Model):
