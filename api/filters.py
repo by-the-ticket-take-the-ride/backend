@@ -1,9 +1,12 @@
-from django_filters.rest_framework import FilterSet, filters
+from django_filters.rest_framework import CharFilter, FilterSet, filters
 
 from events.models import City, Event
 
 
 class EventFilter(FilterSet):
+    """Фильтр для мероприятий."""
+
+    type_event = CharFilter(method='get_types')
     city_name = filters.CharFilter(
         field_name='place__city__name',
         lookup_expr='startswith'
@@ -11,7 +14,16 @@ class EventFilter(FilterSet):
 
     class Meta:
         model = Event
-        fields = ['city_name']
+        fields = ('type_event', 'city_name',)
+
+    def get_types(self, queryset, field_name, value):
+        if value:
+            return queryset.filter(
+                type_event__slug__in=(
+                    self.request.query_params.getlist('type_event')
+                )
+            )
+        return queryset
 
 
 class CityFilter(FilterSet):
