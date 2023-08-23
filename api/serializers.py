@@ -23,20 +23,19 @@ class UserInfoSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'email', 'phone', 'telegram',)
 
 
+class CitySerializer(serializers.ModelSerializer):
+    """Сериализатор города."""
+    class Meta:
+        model = City
+        fields = ('id', 'name')
+
+
 class TypeEventSerializer(serializers.ModelSerializer):
     """Серилизатор типа мероприятия."""
 
     class Meta:
         model = TypeEvent
         fields = ('id', 'name', 'slug')
-
-
-class CitySerialier(serializers.ModelSerializer):
-    """Сериализатор города."""
-
-    class Meta:
-        model = City
-        fields = ('id', 'name')
 
 
 class ZoneHallSerializer(serializers.ModelSerializer):
@@ -75,6 +74,7 @@ class EventSerializer(serializers.ModelSerializer):
     image = Base64ImageField()
     place = PlaceSerializer(read_only=True)
     is_favorited = serializers.SerializerMethodField()
+    place = PlaceSerializer(read_only=True)
 
     class Meta:
         model = Event

@@ -14,6 +14,7 @@ app_name = 'api'
 
 router = DefaultRouter()
 
+router.register('cities', CityViewSet, basename='cities')
 router.register('types_event', TypeEventViewSet, basename='types_event')
 router.register('events', EventViewSet, basename='events')
 router.register('city', CityViewSet, basename='cities')

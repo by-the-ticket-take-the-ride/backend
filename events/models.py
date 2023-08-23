@@ -30,15 +30,25 @@ class TypeEvent(models.Model):
 class City(models.Model):
     """Модель города."""
     name = models.CharField(
+        max_length=100,
+        verbose_name='Город',
+        help_text='Город'
+    )
+    name_en = models.CharField(
         max_length=50,
         verbose_name='Город',
-        help_text='Город',
-        unique=True
+        help_text='Город'
     )
 
     class Meta:
         verbose_name = 'Город'
         verbose_name_plural = 'Города'
+        constraints = [
+            models.UniqueConstraint(
+                fields=('name', 'name_en'),
+                name='unique_city',
+            )
+        ]
 
     def __str__(self):
         return self.name
