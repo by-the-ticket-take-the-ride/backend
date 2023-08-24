@@ -46,9 +46,13 @@ python manage.py migrate
 ```
 
 Есть возможность загрузки фикстур - данных о городах и типах мероприятий. Для этого нужно выполнить команды:
-Загрузить данные о городах:
+Загрузить данные о городах из json:
 ```
-python manage.py import_data --write_cities
+python manage.py import_data --write_cities_json
+```
+Загрузить данные о городах из csv:
+```
+python manage.py import_data --write_cities_csv
 ```
 Прочитать данные о городах:
 ```
