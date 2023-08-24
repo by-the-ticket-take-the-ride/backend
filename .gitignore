@@ -167,5 +167,8 @@ cython_debug/
 # media
 media/
 
+#static
+static/
+
 # migrations
 migrations/
