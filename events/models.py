@@ -39,7 +39,6 @@ class City(models.Model):
         max_length=50,
         verbose_name='Город',
         help_text='Город',
-        unique=True
     )
 
     class Meta:
@@ -56,7 +55,6 @@ class Place(models.Model):
         max_length=50,
         verbose_name='Название площадки',
         help_text='Название площадки',
-        unique=True
     )
     address = models.CharField(
         max_length=50,
@@ -74,6 +72,12 @@ class Place(models.Model):
     class Meta:
         verbose_name = 'Место мероприятия'
         verbose_name_plural = 'Места мероприятий'
+        constraints = [
+            models.UniqueConstraint(
+                fields=('name', 'address'),
+                name='unique_place',
+            )
+        ]
 
     def __str__(self):
         return self.name

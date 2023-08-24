@@ -21,7 +21,7 @@ class TypeEventSerializer(serializers.ModelSerializer):
 
 class PlaceSerializer(serializers.ModelSerializer):
     """Сериализатор места мероприятия."""
-    city = CitySerializer(read_only=True)
+    city = CitySerializer()
 
     class Meta:
         model = Place
@@ -33,7 +33,7 @@ class EventSerializer(serializers.ModelSerializer):
     type_event = TypeEventSerializer(read_only=True)
     image = Base64ImageField()
     is_favorited = serializers.SerializerMethodField()
-    place = PlaceSerializer(read_only=True)
+    place = PlaceSerializer()
 
     class Meta:
         model = Event
