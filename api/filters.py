@@ -18,10 +18,11 @@ class EventFilter(FilterSet):
 
     type_event = filters.CharFilter(method='get_types')
     city_name = filters.CharFilter(method='get_city_name')
+    date_event = filters.DateFilter()
 
     class Meta:
         model = Event
-        fields = ('type_event', 'city_name')
+        fields = ('type_event', 'city_name', 'date_event')
 
     def get_types(self, queryset, field_name, value):
         if value:
