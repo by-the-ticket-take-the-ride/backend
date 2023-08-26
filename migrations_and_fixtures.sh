@@ -4,5 +4,3 @@ python3 manage.py makemigrations events
 python3 manage.py migrate
 python3 manage.py collectstatic --no-input
 python3 manage.py loaddata dump.json
-# python3 manage.py import_data --write_cities_csv
-# python3 manage.py import_data --write_types
