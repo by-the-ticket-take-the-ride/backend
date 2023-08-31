@@ -76,6 +76,8 @@ class EventSerializer(serializers.ModelSerializer):
             'place',
             'name',
             'description',
+            'subtitle',
+            'map',
             'date_event',
             'time_event',
             'image',
