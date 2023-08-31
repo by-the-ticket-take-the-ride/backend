@@ -7,11 +7,35 @@ from rest_framework import permissions, serializers, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from events.models import City, Event, Favorite, TypeEvent
+from events.models import (City, Event, Favorite, Ticket, TypeEvent, TypeHall,
+                           ZoneHall)
 
 from .filters import CityFilter, EventFilter
 from .serializers import (CitySerializer, EventSerializer, FavoriteSerializer,
-                          TypeEventSerializer)
+                          GetTicketSerializer, PostTicketSerializer,
+                          TypeEventSerializer, TypeHallSerializer,
+                          ZoneHallSerializer)
+
+
+class CityViewSet(viewsets.ReadOnlyModelViewSet):
+    """Вьюсет для городов."""
+
+    queryset = City.objects.all()
+    serializer_class = CitySerializer
+
+
+class TypeHallViewSet(viewsets.ReadOnlyModelViewSet):
+    """Вьюсет для типа схемы зала."""
+
+    queryset = TypeHall.objects.all()
+    serializer_class = TypeHallSerializer
+
+
+class ZoneHallViewSet(viewsets.ReadOnlyModelViewSet):
+    """Вьюсет для зон схемы зала."""
+
+    queryset = ZoneHall.objects.all()
+    serializer_class = ZoneHallSerializer
 
 
 class CityViewSet(viewsets.ModelViewSet):
@@ -25,12 +49,14 @@ class CityViewSet(viewsets.ModelViewSet):
 
 class TypeEventViewSet(viewsets.ModelViewSet):
     """Вьюсет для типа мероприятия."""
+
     queryset = TypeEvent.objects.all()
     serializer_class = TypeEventSerializer
 
 
 class EventViewSet(viewsets.ModelViewSet):
     """Вьюсет для мероприятия."""
+
     queryset = Event.objects.all()
     serializer_class = EventSerializer
     filter_backends = (DjangoFilterBackend,)
@@ -65,3 +91,19 @@ class EventViewSet(viewsets.ModelViewSet):
                                      event=event)
         favorite.delete()
         return Response(status=HTTPStatus.NO_CONTENT)
+
+
+class TicketViewSet(viewsets.ModelViewSet):
+    """Вьюсет для билетов."""
+
+    queryset = Ticket.objects.all()
+    http_method_names = ['get', 'post']
+    perimisson_classes = (permissions.IsAuthenticated,)
+
+    def get_serializer_class(self):
+        if self.action in ('list', 'retrieve'):
+            return GetTicketSerializer
+        return PostTicketSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(guest=self.request.user)
