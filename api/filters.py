@@ -66,6 +66,6 @@ class EventSearch(SearchFilter):
         if len(params) < 2 or len(params) > 100:
             raise serializers.ValidationError(
                 'Количество символов в поле поиска должно быть от 2 до 100')
-        params = params.replace('\x00', '')  # strip null characters
+        params = params.replace('\x00', '')
         params = params.replace(',', ' ')
         return params.split()
