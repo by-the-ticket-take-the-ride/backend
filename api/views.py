@@ -38,7 +38,7 @@ class ZoneHallViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ZoneHallSerializer
 
 
-class CityViewSet(viewsets.ModelViewSet):
+class CityViewSet(viewsets.ReadOnlyModelViewSet):
     """Вьюсет для города."""
     queryset = City.objects.all()
     serializer_class = CitySerializer
@@ -47,7 +47,7 @@ class CityViewSet(viewsets.ModelViewSet):
     filterset_class = CityFilter
 
 
-class TypeEventViewSet(viewsets.ModelViewSet):
+class TypeEventViewSet(viewsets.ReadOnlyModelViewSet):
     """Вьюсет для типа мероприятия."""
 
     queryset = TypeEvent.objects.all()
