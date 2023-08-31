@@ -5,14 +5,14 @@ from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema
 from ipware import get_client_ip
-from rest_framework import filters, permissions, serializers, viewsets
+from rest_framework import permissions, serializers, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from events.models import (City, Event, Favorite, Ticket, TypeEvent, TypeHall,
                            ZoneHall)
 
-from .filters import CityFilter, EventFilter
+from .filters import CityFilter, EventFilter, EventSearch
 from .serializers import (CitySerializer, EventSerializer, FavoriteSerializer,
                           GetTicketSerializer, PostTicketSerializer,
                           TypeEventSerializer, TypeHallSerializer,
@@ -61,7 +61,7 @@ class EventViewSet(viewsets.ModelViewSet):
 
     queryset = Event.objects.all()
     serializer_class = EventSerializer
-    filter_backends = (DjangoFilterBackend, filters.SearchFilter,)
+    filter_backends = (DjangoFilterBackend, EventSearch,)
     filterset_class = EventFilter
     search_fields = ('^name',)
 
