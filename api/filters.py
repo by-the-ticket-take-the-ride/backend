@@ -63,9 +63,9 @@ class EventFilter(FilterSet):
 class EventSearch(SearchFilter):
     def get_search_terms(self, request):
         params = request.query_params.get(self.search_param, '')
-        if len(params) < 2 or len(params) > 100:
+        if len(params) > 100:
             raise serializers.ValidationError(
-                'Количество символов в поле поиска должно быть от 2 до 100')
+                'Количество символов в поле поиска может быть не больше 100')
         params = params.replace('\x00', '')
         params = params.replace(',', ' ')
         return params.split()
