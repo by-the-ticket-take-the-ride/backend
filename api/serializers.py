@@ -54,7 +54,6 @@ class PlaceSerializer(serializers.ModelSerializer):
     city = CitySerializer(read_only=True)
     type = TypeHallSerializer(read_only=True)
 
-
     class Meta:
         model = Place
         fields = ('id', 'name', 'address', 'city', 'type')

@@ -1,7 +1,6 @@
 import requests
+from django_filters.rest_framework import FilterSet, filters
 from ipware import get_client_ip
-from django_filters.rest_framework import CharFilter, FilterSet, filters
-
 
 from events.models import City, Event
 
