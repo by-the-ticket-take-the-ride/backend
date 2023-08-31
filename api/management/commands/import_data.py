@@ -1,3 +1,4 @@
+import csv
 import json
 import os
 
@@ -17,9 +18,14 @@ class Command(BaseCommand):
             help='read from database',
         )
         parser.add_argument(
-            '--write_cities',
+            '--write_cities_json',
             action='store_true',
-            help='read from database',
+            help='write json data to database',
+        )
+        parser.add_argument(
+            '--write_cities_csv',
+            action='store_true',
+            help='write csv data to database',
         )
         parser.add_argument(
             '--write_types',
@@ -29,12 +35,22 @@ class Command(BaseCommand):
         parser.add_argument(
             '--read_types',
             action='store_true',
-            help='write json data to database',
+            help='read from database',
         )
 
-    def write_cities(self, data):
+    def write_cities_json(self, data):
         for obj in data:
-            City.objects.get_or_create(**obj)
+            City.objects.update_or_create(**obj)
+        self.stdout.write('Данные о городах успешно импортированы.')
+
+    def write_cities_csv(self, file):
+        with open(file, newline='', encoding='utf-8') as csv_file:
+            csv_reader = csv.reader(csv_file)
+            next(csv_reader)  # Пропускаем заголовок
+            for row in csv_reader:
+                name = row[2]
+                name_en = row[1]
+                City.objects.update_or_create(name=name, name_en=name_en)
         self.stdout.write('Данные о городах успешно импортированы.')
 
     def read_cities(self):
@@ -44,7 +60,7 @@ class Command(BaseCommand):
 
     def write_types(self, data):
         for obj in data:
-            TypeEvent.objects.get_or_create(**obj)
+            TypeEvent.objects.update_or_create(**obj)
         self.stdout.write('Данные о типах успешно импортированы.')
 
     def read_types(self):
@@ -55,19 +71,24 @@ class Command(BaseCommand):
     def handle(self, **options):
         if not (
             options.get("read_cities")
-            or options.get("write_cities")
+            or options.get("write_cities_json")
+            or options.get("write_cities_csv")
             or options.get("write_types")
             or options.get("read_types")
         ):
             raise CommandError(
-                'Use --read_cities or --write_cities or'
-                '--write_types or --read_types argument'
+                'Use --read_cities or --write_cities_json or '
+                ' --write_cities_csv or --write_types or '
+                '--read_types argument'
             )
-        if options['write_cities']:
+        if options['write_cities_json']:
             json_file = os.path.join(TEST_DATA_DIR, 'cities.json')
             with open(json_file, 'r', encoding='utf-8') as file:
                 data = json.load(file)
-                self.write_cities(data)
+                self.write_cities_json(data)
+        if options['write_cities_csv']:
+            csv_file = os.path.join(TEST_DATA_DIR, 'cities.csv')
+            self.write_cities_csv(csv_file)
         if options['write_types']:
             json_file = os.path.join(TEST_DATA_DIR, 'types.json')
             with open(json_file, 'r', encoding='utf-8') as file:
