@@ -1,10 +1,8 @@
 from http import HTTPStatus
 
-import requests
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema
-from ipware import get_client_ip
 from rest_framework import permissions, serializers, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -64,24 +62,8 @@ class EventViewSet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filterset_class = EventFilter
 
-    def filter_queryset(self, queryset):
-        # Определение города по IP-адресу
-        client_ip, _ = get_client_ip(self.request)
-        response = requests.get(f'http://ipinfo.io/{client_ip}/json')
-        data = response.json()
-        city_name_ip = data.get('city', '')
-
-        # Получение города из параметра запроса
-        city_name_query = self.request.query_params.get('city_name', '')
-
-        if city_name_query:
-            queryset = queryset.filter(
-                place__city__name__iexact=city_name_query)
-        elif city_name_ip:
-            queryset = queryset.filter(
-                place__city__name_en__iexact=city_name_ip)
-
-        return super().filter_queryset(queryset)
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
     @extend_schema(responses={
                    '204': FavoriteSerializer})
