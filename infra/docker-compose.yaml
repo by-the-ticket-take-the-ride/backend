@@ -6,7 +6,7 @@ services:
     image: egorkomel/tickets-backend:latest
     restart: always
     volumes:
-      - static_value:/app/static/
+      - static_value:/app/static_data/
       - media_value:/app/media/
 
   frontend:
