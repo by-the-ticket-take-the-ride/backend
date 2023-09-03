@@ -17,13 +17,6 @@ from .serializers import (CitySerializer, EventSerializer, FavoriteSerializer,
                           ZoneHallSerializer)
 
 
-class CityViewSet(viewsets.ReadOnlyModelViewSet):
-    """Вьюсет для городов."""
-
-    queryset = City.objects.all()
-    serializer_class = CitySerializer
-
-
 class TypeHallViewSet(viewsets.ReadOnlyModelViewSet):
     """Вьюсет для типа схемы зала."""
 
