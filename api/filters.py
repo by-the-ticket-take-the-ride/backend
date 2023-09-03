@@ -1,8 +1,8 @@
 import requests
 from django_filters.rest_framework import FilterSet, filters
+from ipware import get_client_ip
 from rest_framework import serializers
 from rest_framework.filters import SearchFilter
-from ipware import get_client_ip
 
 from events.models import City, Event
 
