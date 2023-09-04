@@ -36,7 +36,11 @@ class EventFilter(FilterSet):
     def get_city_name(self, queryset, field_name, value):
         if value:
             return queryset.filter(
-                place__city__name__startswith=value.lower().capitalize())
+                # place__city__name__startswith=value.lower().capitalize()
+                place__city__name__in=(
+                    self.request.query_params.getlist('city_name')
+                )
+            )
         return queryset
 
     def filter_queryset(self, queryset):
