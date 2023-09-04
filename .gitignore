@@ -171,4 +171,5 @@ media/
 static/
 
 # migrations
+.migrations/
 migrations/
