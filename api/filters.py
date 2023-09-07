@@ -1,6 +1,8 @@
 import requests
 from django_filters.rest_framework import FilterSet, filters
 from ipware import get_client_ip
+from rest_framework import serializers
+from rest_framework.filters import SearchFilter
 
 from events.models import City, Event
 
@@ -36,7 +38,11 @@ class EventFilter(FilterSet):
     def get_city_name(self, queryset, field_name, value):
         if value:
             return queryset.filter(
-                place__city__name__startswith=value.lower().capitalize())
+                # place__city__name__startswith=value.lower().capitalize()
+                place__city__name__in=(
+                    self.request.query_params.getlist('city_name')
+                )
+            )
         return queryset
 
     def filter_queryset(self, queryset):
@@ -56,3 +62,14 @@ class EventFilter(FilterSet):
                 place__city__name_en__iexact=city_name_ip)
 
         return super().filter_queryset(queryset)
+
+
+class EventSearch(SearchFilter):
+    def get_search_terms(self, request):
+        params = request.query_params.get(self.search_param, '')
+        if len(params) > 100:
+            raise serializers.ValidationError(
+                'Количество символов в поле поиска может быть не больше 100')
+        params = params.replace('\x00', '')
+        params = params.replace(',', ' ')
+        return params.split()

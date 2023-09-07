@@ -10,18 +10,11 @@ from rest_framework.response import Response
 from events.models import (City, Event, Favorite, Ticket, TypeEvent, TypeHall,
                            ZoneHall)
 
-from .filters import CityFilter, EventFilter
+from .filters import CityFilter, EventFilter, EventSearch
 from .serializers import (CitySerializer, EventSerializer, FavoriteSerializer,
                           GetTicketSerializer, PostTicketSerializer,
                           TypeEventSerializer, TypeHallSerializer,
                           ZoneHallSerializer)
-
-
-class CityViewSet(viewsets.ReadOnlyModelViewSet):
-    """Вьюсет для городов."""
-
-    queryset = City.objects.all()
-    serializer_class = CitySerializer
 
 
 class TypeHallViewSet(viewsets.ReadOnlyModelViewSet):
@@ -59,8 +52,9 @@ class EventViewSet(viewsets.ModelViewSet):
 
     queryset = Event.objects.all()
     serializer_class = EventSerializer
-    filter_backends = (DjangoFilterBackend,)
+    filter_backends = (DjangoFilterBackend, EventSearch,)
     filterset_class = EventFilter
+    search_fields = ('^name',)
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)

@@ -66,7 +66,6 @@ class EventSerializer(serializers.ModelSerializer):
     image = Base64ImageField()
     place = PlaceSerializer(read_only=True)
     is_favorited = serializers.SerializerMethodField()
-    place = PlaceSerializer()
 
     class Meta:
         model = Event
@@ -76,6 +75,8 @@ class EventSerializer(serializers.ModelSerializer):
             'place',
             'name',
             'description',
+            'subtitle',
+            'map',
             'date_event',
             'time_event',
             'image',

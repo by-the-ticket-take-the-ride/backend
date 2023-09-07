@@ -199,12 +199,20 @@ class Event(models.Model):
         help_text='Описание мероприятия',
         max_length=500,
     )
+    subtitle = models.CharField(
+        verbose_name='Подзаголовок',
+        help_text='Подзаголовок',
+        max_length=500,
+    )
     place = models.ForeignKey(
         Place,
         on_delete=models.CASCADE,
         verbose_name='Место мероприятия',
         help_text='Место мероприятия',
         related_name='events'
+    )
+    map = models.URLField(
+        verbose_name='Место события на карте'
     )
     date_event = models.DateField(
         verbose_name='Дата мероприятия',
