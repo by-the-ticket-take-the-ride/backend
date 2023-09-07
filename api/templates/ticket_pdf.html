@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <b>
+        Билет: {{ ticket.id }}
+        <br>
+        <br>
+        {{ticket.event.place.name}}
+        <br>
+        {{ticket.event.place.address}}
+        <br>
+        {{ticket.event.date_event}} {{ticket.event.time_event}}
+        <br>
+        <br>
+        {{ ticket.zone_hall.name }}
+        <br>
+        Ряд:{{ ticket.row }} Место: {{ ticket.seat }}
+        <br>
+        Стоимость: {{ ticket.price }}
+        <br>
+        <br>
+        {{ ticket.guest.get_full_name }}
+        {{ ticket.guest.phone }}
+    </b>
+</body>
+</html>
