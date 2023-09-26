@@ -49,6 +49,7 @@ class City(models.Model):
                 name='unique_city',
             )
         ]
+        ordering = ['name']
 
     def __str__(self):
         return self.name
@@ -114,7 +115,6 @@ class TypeHall(models.Model):
 
 
 class TypeZoneHall(models.Model):
-
     type = models.ForeignKey(TypeHall, on_delete=models.CASCADE)
     zones = models.ForeignKey(ZoneHall, on_delete=models.CASCADE)
 
