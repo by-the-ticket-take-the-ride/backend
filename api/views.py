@@ -4,8 +4,6 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema
-from rest_framework.mixins import CreateModelMixin, ListModelMixin, \
-    DestroyModelMixin
 from rest_framework import permissions, serializers, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
