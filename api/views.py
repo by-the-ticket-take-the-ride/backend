@@ -1,18 +1,21 @@
 from http import HTTPStatus
 import requests
 
+from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from django.http import HttpResponseRedirect
 from drf_spectacular.utils import extend_schema
 from rest_framework import permissions, serializers, viewsets, views
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from events.models import (City, Event, Favorite, Ticket, TypeEvent, TypeHall,
                            ZoneHall)
 
 from .filters import CityFilter, EventFilter, EventSearch
+from .permissions import IsAuthorStaffOrReadOnly
 from .serializers import (CitySerializer, EventSerializer, FavoriteSerializer,
                           GetTicketSerializer, PostTicketSerializer,
                           TypeEventSerializer, TypeHallSerializer,
@@ -62,7 +65,7 @@ class EventViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user)
 
     @extend_schema(responses={
-                   '204': FavoriteSerializer})
+        '204': FavoriteSerializer})
     @action(detail=True, methods=['post', 'delete'],
             permission_classes=[permissions.IsAuthenticated],
             serializer_class=FavoriteSerializer)
@@ -113,3 +116,51 @@ class UserActivationView(views.APIView):
         post_data = {"uid": uid, "token": token}
         requests.post(post_url, data=post_data)
         return HttpResponseRedirect(web_url)
+
+      
+class FavoriteViewSet(viewsets.ViewSet):
+    @action(
+        methods=['POST'], detail=True, permission_classes=(IsAuthenticated,)
+    )
+    @transaction.atomic()
+    def create(self, request, id=None):
+        """Добавить в избранное событие."""
+        user = request.user
+        event = get_object_or_404(Event, id=id)
+        data = {
+            'user': user.id,
+            'event': event.id,
+        }
+        serializer = FavoriteSerializer(
+            data=data,
+            context={'request': request},
+        )
+        serializer.is_valid(raise_exception=True)
+
+        Favorite.objects.create(user=user, event=event)
+        serializer = EventSerializer(event,
+                                     context={'request': request})
+        return Response(serializer.data, status=HTTPStatus.CREATED,
+                        exception=True)
+
+    @transaction.atomic()
+    @action(
+        methods=['DELETE'], detail=True,
+        permission_classes=(IsAuthorStaffOrReadOnly,)
+    )
+    def destroy(self, request, id=None, ):
+        """Удалить из избранного событие."""
+        user = request.user
+        try:
+            event = Event.objects.filter(pk=id).first()
+        except Event.DoesNotExist:
+            raise serializers.ValidationError(
+                'События не существует'
+            )
+        if not Favorite.objects.filter(user=user,
+                                       event=event).first():
+            raise serializers.ValidationError(
+                'Событие не добавлено в избранное'
+            )
+        Favorite.objects.filter(user=user, event=event).delete()
+        return Response(status=HTTPStatus.NO_CONTENT, exception=True)

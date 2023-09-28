@@ -10,7 +10,7 @@ services:
       - ./.env
   
   backend:
-    image: egorkomel/tickets-backend:latest
+    image: pytem/tickets-backend:latest
     restart: always
     volumes:
       - static_value:/app/static/

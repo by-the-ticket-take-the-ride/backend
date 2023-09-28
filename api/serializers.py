@@ -104,6 +104,16 @@ class FavoriteSerializer(serializers.ModelSerializer):
         model = Favorite
         fields = ('user', 'event')
 
+    def validate(self, attrs):
+        user = self.context['request'].user
+        event = attrs['event']
+
+        if Favorite.objects.filter(user=user, event=event).exists():
+            raise serializers.ValidationError(
+                {'validation_errors': 'Событие уже в избранном'})
+
+        return attrs
+
 
 class GetTicketSerializer(serializers.ModelSerializer):
     """Сериализатор билетов метод GET."""
