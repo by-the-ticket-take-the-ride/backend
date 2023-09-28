@@ -1,10 +1,12 @@
 from http import HTTPStatus
+import requests
 
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
+from django.http import HttpResponseRedirect
 from drf_spectacular.utils import extend_schema
-from rest_framework import permissions, serializers, viewsets
+from rest_framework import permissions, serializers, viewsets, views
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -106,6 +108,16 @@ class TicketViewSet(viewsets.ModelViewSet):
         serializer.save(guest=self.request.user)
 
 
+class UserActivationView(views.APIView):
+    def get(self, request, uid, token):
+        protocol = 'https://' if request.is_secure() else 'http://'
+        web_url = protocol + request.get_host()
+        post_url = f"{web_url}/api/users/activation/"
+        post_data = {"uid": uid, "token": token}
+        requests.post(post_url, data=post_data)
+        return HttpResponseRedirect(web_url)
+
+      
 class FavoriteViewSet(viewsets.ViewSet):
     @action(
         methods=['POST'], detail=True, permission_classes=(IsAuthenticated,)

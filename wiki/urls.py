@@ -4,6 +4,8 @@ from django.contrib import admin
 from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
+from api.views import UserActivationView
+
 # urlpatterns = [
 #     path('admin/', admin.site.urls),
 #     # path('api/', include('api.urls')),
@@ -17,6 +19,7 @@ urlpatterns = [
         SpectacularSwaggerView.as_view(url_name='api-schema'),
         name='api-docs',
     ),
+    path('activate/<str:uid>/<str:token>/', UserActivationView.as_view()),
     path('api/', include('api.urls', namespace='api')),
 ]
 
