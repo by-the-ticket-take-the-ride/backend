@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'djoser',
     'ipware',
     'django_filters',
+    'import_export',
 ]
 
 MIDDLEWARE = [
