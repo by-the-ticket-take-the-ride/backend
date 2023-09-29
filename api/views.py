@@ -110,14 +110,12 @@ class TicketViewSet(viewsets.ModelViewSet):
 
 class UserActivationView(views.APIView):
     def get(self, request, uid, token):
-        protocol = 'https://' if request.is_secure() else 'http://'
-        web_url = protocol + request.get_host()
-        post_url = f"{web_url}/api/users/activation/"
+        post_url = "http://buytheticket.ddns.net/api/users/activation/"
         post_data = {"uid": uid, "token": token}
         requests.post(post_url, data=post_data)
-        return HttpResponseRedirect(web_url)
+        return HttpResponseRedirect('http://buytheticket.ddns.net')
 
-      
+
 class FavoriteViewSet(viewsets.ViewSet):
     @action(
         methods=['POST'], detail=True, permission_classes=(IsAuthenticated,)
