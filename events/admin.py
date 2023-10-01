@@ -34,7 +34,12 @@ class ZonesHallAdmin(admin.ModelAdmin):
     list_display = ('name',)
 
 
+class TicketAdmin(admin.ModelAdmin):
+    list_display = ('id', 'guest', 'event', 'is_paid')
+    list_editable = ('is_paid',)
+
+
 # admin.site.register(City)
 admin.site.register(Place)
-admin.site.register(Ticket)
+admin.site.register(Ticket, TicketAdmin)
 admin.site.register(Favorite)
