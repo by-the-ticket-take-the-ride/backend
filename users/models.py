@@ -1,6 +1,10 @@
+from datetime import timedelta
+
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.db import models
+from django.utils import timezone
 
 
 class User(AbstractUser):
@@ -20,6 +24,8 @@ class User(AbstractUser):
         verbose_name='имя пользователя в Telegram'
     )
     is_organizer = models.BooleanField(default=False)
+    birthday = models.DateField(verbose_name='Дата рождения', null=True,
+                                blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ('username',)
@@ -30,3 +36,13 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+
+    def clean_fields(self, exclude=None):
+        super().clean_fields(exclude=exclude)
+
+        now = timezone.now().date()
+        if self.birthday and self.birthday > (now - timedelta(days=365 * 18)):
+            raise ValidationError(
+                {'birthday': 'Пользователю должно быть больше 18 лет '})
+        if self.birthday and (now.year - self.birthday.year) > 120:
+            raise ValidationError({'birthday': 'Введите верный возраст'})
