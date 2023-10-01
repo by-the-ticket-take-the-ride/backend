@@ -12,11 +12,13 @@ class UserInfoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'phone', 'telegram',)
+        fields = ('id', 'username', 'email', 'phone', 'telegram', 'first_name',
+                  'last_name')
 
 
 class CitySerializer(serializers.ModelSerializer):
     """Сериализатор города."""
+
     class Meta:
         model = City
         fields = ('id', 'name')
@@ -94,7 +96,7 @@ class EventSerializer(serializers.ModelSerializer):
 
 @extend_schema_serializer(
     exclude_fields=(
-        ['user', 'event']
+            ['user', 'event']
     )
 )
 class FavoriteSerializer(serializers.ModelSerializer):
@@ -168,9 +170,9 @@ class PostTicketSerializer(serializers.ModelSerializer):
         zone_hall = validated_data.get('zone_hall')
         validated_data['price'] = zone_hall.price
         if Ticket.objects.filter(
-            guest=validated_data.get('guest'),
-            row=validated_data.get('row'),
-            seat=validated_data.get('seat')
+                guest=validated_data.get('guest'),
+                row=validated_data.get('row'),
+                seat=validated_data.get('seat')
         ).exists():
             raise serializers.ValidationError(
                 'Билет уже куплен.'
