@@ -96,7 +96,7 @@ class TicketViewSet(viewsets.ModelViewSet):
     """Вьюсет для билетов."""
 
     http_method_names = ['get', 'post']
-    perimisson_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
