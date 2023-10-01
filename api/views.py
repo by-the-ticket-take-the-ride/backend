@@ -99,7 +99,9 @@ class TicketViewSet(viewsets.ModelViewSet):
     perimisson_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
-        return Ticket.objects.filter(guest=self.request.user)
+        if self.request.user.is_authenticated:
+            return Ticket.objects.filter(guest=self.request.user)
+        return Ticket.objects.none()
 
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve'):
