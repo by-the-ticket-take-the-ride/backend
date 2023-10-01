@@ -159,7 +159,7 @@ DJOSER = {
     'SEND_ACTIVATION_EMAIL': True,
     'USER_CREATE_PASSWORD_RETYPE': True,
     'SET_PASSWORD_RETYPE': True,
-    'SERIALIZERS': {},
+    'SERIALIZERS': {'current_user': 'api.serializers.UserInfoSerializer'},
 }
 
 EMAIL_USE_TLS = True
