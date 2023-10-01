@@ -95,9 +95,11 @@ class EventViewSet(viewsets.ModelViewSet):
 class TicketViewSet(viewsets.ModelViewSet):
     """Вьюсет для билетов."""
 
-    queryset = Ticket.objects.all()
     http_method_names = ['get', 'post']
     perimisson_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        return Ticket.objects.filter(guest=self.request.user)
 
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve'):
