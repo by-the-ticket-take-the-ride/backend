@@ -13,6 +13,7 @@ from rest_framework.response import Response
 
 from events.models import (City, Event, Favorite, Ticket, TypeEvent, TypeHall,
                            ZoneHall)
+from .custom_functions import send_ticket_to_user
 
 from .filters import CityFilter, EventFilter, EventSearch
 from .permissions import IsAuthorStaffOrReadOnly
@@ -109,7 +110,8 @@ class TicketViewSet(viewsets.ModelViewSet):
         return PostTicketSerializer
 
     def perform_create(self, serializer):
-        serializer.save(guest=self.request.user)
+        ticket = serializer.save(guest=self.request.user)
+        send_ticket_to_user(ticket=ticket, user=self.request.user)
 
 
 class UserActivationView(views.APIView):

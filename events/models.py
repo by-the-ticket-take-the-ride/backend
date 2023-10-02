@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.utils import timezone
 
 User = get_user_model()
 
@@ -282,7 +283,7 @@ class Ticket(models.Model):
     )
     pub_date = models.DateTimeField(
         verbose_name='Дата покупки',
-        auto_now_add=True
+        default=timezone.now
     )
 
     class Meta:
