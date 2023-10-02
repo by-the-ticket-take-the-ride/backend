@@ -136,6 +136,7 @@ class GetTicketSerializer(serializers.ModelSerializer):
             'guest',
             'is_paid'
         )
+        read_only_fields = ('is_paid', )
 
 
 class PostTicketSerializer(serializers.ModelSerializer):
